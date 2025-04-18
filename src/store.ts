@@ -1,9 +1,25 @@
 import { defineStore } from "pinia";
 
-const initialState = {
+interface IState {
+    startGame: Boolean,
+    canStart: Boolean,
+    isGameOver: Boolean,
+    isPlayerTurn: Boolean,
+    shouldResetGame: Boolean,
+    isHorizontal: Boolean,
+    draggedShip: String,
+    removeShip: String,
+} 
+
+const initialState: IState = {
     startGame: false,
     canStart: false,
-    
+    isGameOver: false,
+    isPlayerTurn: true,
+    shouldResetGame: false,
+    isHorizontal: true,
+    draggedShip: '',
+    removeShip: ''
 }
 
 export const useBattleshipsStore = defineStore('battleships', {
@@ -12,6 +28,23 @@ export const useBattleshipsStore = defineStore('battleships', {
 
     },
     actions: {
-
+        flip() {
+            this.isHorizontal = !this.isHorizontal;
+        },
+        doStartGame(status: Boolean) {
+            this.startGame = status;
+            if(status) {
+                this.isGameOver = false;
+                this.shouldResetGame = false;
+                this.isPlayerTurn = false;
+            }
+        },
+        setCanStart(status: Boolean) {
+            this.canStart = status;
+            this.isGameOver = false;
+        },
+        setIsPlayerTurn(status: Boolean) {
+            this.isPlayerTurn = status;
+        }
     }
 });

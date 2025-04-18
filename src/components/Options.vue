@@ -27,6 +27,9 @@
 </template>
 <script setup lang="ts">
     import { computed, watch, ref, type Ref } from 'vue';
+    import { useBattleshipsStore } from '../store';
+
+    const battleshipStore = useBattleshipsStore();
     
     // we could make this data array centralised and create the above ships from it
     const shipNames = ['battleship', 'destroyer', 'destroyerTwo'];
@@ -38,11 +41,10 @@
     let draggedShip;
 
     const shipAxis = computed(() => {
-        return !props.isHorizontal ? 'flipped' : '';
+        return !battleshipStore.isHorizontal ? 'flipped' : '';
     });
 
     const props = defineProps({
-        isHorizontal: Boolean,
         removeShip: String,
         restoreShips: Boolean,
     });
@@ -56,7 +58,7 @@
         if(newValue) {
             shipToRemove.value.push(newValue);
             if(shipToRemove.value.length === 3) {
-                emit('canStart', true);
+                battleshipStore.setCanStart(true);
             }
         }
     });

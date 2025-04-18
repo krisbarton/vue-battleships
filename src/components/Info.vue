@@ -13,10 +13,13 @@
 </template>
 <script setup lang="ts">
     import { watch, ref, type Ref } from 'vue';
+    import { storeToRefs } from 'pinia';
+    import { useBattleshipsStore } from '../store';
+
+    const battleshipStore = useBattleshipsStore();
+    const { startGame, isPlayerTurn } = storeToRefs(battleshipStore);
 
     const props = defineProps({
-        isPlayerTurn: Boolean,
-        startGame: Boolean,
         isGameOver: Boolean,
     });
 

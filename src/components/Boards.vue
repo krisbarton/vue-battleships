@@ -32,15 +32,19 @@
 <script setup lang="ts">
 import { watch, ref, type Ref } from 'vue';
 import Ship, { type IShip } from '../static/ship';
+import { useBattleshipsStore } from '../store';
+import { storeToRefs } from 'pinia';
+
+const battleshipStore = useBattleshipsStore();
+
+const { isPlayerTurn } = storeToRefs(battleshipStore);
 
  const props = defineProps({
-    isHorizontal: Boolean,
     draggedShip: String,
-    isPlayerTurn: Boolean,
     shouldResetGame: Boolean,
  });
 
- const emit = defineEmits(['removeShip', 'changeTurn', 'gameOver']);
+ const emit = defineEmits(['removeShip', 'gameOver']);
 
  watch(() => props.draggedShip, (newValue) => {
     if(newValue) {
@@ -84,7 +88,7 @@ import Ship, { type IShip } from '../static/ship';
     const startIndex = startIdNumber ? startIdNumber : randomStartIndex;
 
     const randomBoolean = Math.random() < 0.5;
-    const isHorizontal = user === 'computer' ? randomBoolean : props.isHorizontal;
+    const isHorizontal = user === 'computer' ? randomBoolean : battleshipStore.isHorizontal;
     const validStart = isHorizontal 
                        ? startIndex <= totalBlocks - ship.length
                        ? startIndex
@@ -147,7 +151,7 @@ const dropShip = (e: any) => {
 
 const playerBoardClick = (block: number) => {
    
-   if(playerSelection.value.includes(block) || !props.isPlayerTurn) {
+   if(playerSelection.value.includes(block) || !isPlayerTurn) {
      return;
    }
 
@@ -161,7 +165,7 @@ const playerBoardClick = (block: number) => {
    if(playerHitCount.value === totalHits) {
     emit('gameOver');
    } else {
-    emit('changeTurn', false)
+    battleshipStore.setIsPlayerTurn(false);
    }
 };
 
@@ -182,12 +186,12 @@ const computerTurn = () => {
    if(computerHitCount.value === totalHits) {
     emit('gameOver');
    } else {
-     emit('changeTurn', true)
+    battleshipStore.setIsPlayerTurn(true);
    }
 
 };
 
-watch(() => props.isPlayerTurn, (newValue) => {
+watch(() => isPlayerTurn.value, (newValue) => {
     if(!newValue) {
         setTimeout(() => computerTurn(), 500);
     }
