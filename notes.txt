@@ -1,0 +1,46 @@
+Notes:
+
+- There must be 2 squares, one for the users board and one for the computers.
+- The users ships are stored under the board and disappear when added.
+- The ships must be dragged and dropped to the board.
+- There should be an option to rotate the ship
+- We must know if a square if occupied, if not do not allow the drop.
+- The computers ships are automatically added to the board.
+- The game can only be started once the users ships are on the board.
+- Computers go must be automated after your go. At random is fine.
+- Either the user or computer may not do into the same square twice. Perhaps all squares in an array. They are removed from the array when a go is taken.
+- If a ship is destroyed, we must update the UI stating as much.
+- If either the user or computer have no ships left, the game is over.
+
+Spec:
+
+The Problem
+Implement a game of battle ships. If you’ve never played the game, you can get a feel for it
+from this online game.
+
+You should create a Vue.JS application to allow a single human player to play a one-sided
+game of battleships against the computer.
+
+The program should create a 10x10 grid, and place a number of ships on the grid at
+random with the following sizes:
+
+- 1x Battleship (5 squares)
+- 2x Destroyers (4 squares)
+
+The application should accept input from the user in the format “A5” to signify a square to
+target, and feedback to the user whether the shot was success, and additionally report on
+the sinking of any vessels. The grid should be visually represented on screen. While we
+dont expect you to create a rich graphic user interface the UI should look clean and easy for
+humans to understand.
+
+Please share your submission as a public github repo on your own github profile. Share how
+long you spent on the assignment.
+
+// clean up to destroyed
+
+- report wheh a vessel has been sunk
+- make sure the code is in a state in which it can be extended if necessary
+- centralised static data items where possible
+- convert to state management
+- use computed where possible, they are very much reactive
+- write logic unit tests
