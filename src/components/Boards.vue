@@ -37,22 +37,9 @@ import { storeToRefs } from 'pinia';
 
 const battleshipStore = useBattleshipsStore();
 
-const { isPlayerTurn } = storeToRefs(battleshipStore);
+const { isPlayerTurn, shouldResetGame, draggedShip } = storeToRefs(battleshipStore);
 
- const props = defineProps({
-    draggedShip: String,
-    shouldResetGame: Boolean,
- });
-
- const emit = defineEmits(['removeShip', 'gameOver']);
-
- watch(() => props.draggedShip, (newValue) => {
-    if(newValue) {
-        dragShip.value = newValue;
-    }
- });
-
- watch(() => props.shouldResetGame, (newValue) => {
+ watch(shouldResetGame, (newValue) => {
     if(newValue) {
         playerSelection.value = [];
         computerSelection.value = [];
@@ -64,7 +51,6 @@ const { isPlayerTurn } = storeToRefs(battleshipStore);
     }
  });
 
- const dragShip = ref('');
  const totalBlocks: number = 100;
  const blockWidth: number = 10;
  const blocks: Array<number> = Array.from(Array(totalBlocks).keys());
@@ -141,11 +127,11 @@ const dragOver = (e: any) => {
 
 const dropShip = (e: any) => {
     const startId = e.target.id;
-    const ship = ships.filter((ship) => ship.name === dragShip.value)[0];
+    const ship = ships.filter((ship) => ship.name === draggedShip.value)[0];
     if(ship) addShip(ship, startId, 'player');
     if(!notDropped) {
-        emit('removeShip', dragShip.value);
-        dragShip.value = '';
+        battleshipStore.setRemoveShip(draggedShip.value);
+        draggedShip.value = '';
     }
 };
 
@@ -163,7 +149,7 @@ const playerBoardClick = (block: number) => {
    }
 
    if(playerHitCount.value === totalHits) {
-    emit('gameOver');
+    battleshipStore.setIsGameOver(true);
    } else {
     battleshipStore.setIsPlayerTurn(false);
    }
@@ -184,7 +170,7 @@ const computerTurn = () => {
    }
 
    if(computerHitCount.value === totalHits) {
-    emit('gameOver');
+    battleshipStore.setIsGameOver(true);
    } else {
     battleshipStore.setIsPlayerTurn(true);
    }

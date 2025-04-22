@@ -28,8 +28,11 @@
 <script setup lang="ts">
     import { computed, watch, ref, type Ref } from 'vue';
     import { useBattleshipsStore } from '../store';
+    import { storeToRefs } from 'pinia';
 
     const battleshipStore = useBattleshipsStore();
+
+    const { removeShip, shouldResetGame } = storeToRefs(battleshipStore);
     
     // we could make this data array centralised and create the above ships from it
     const shipNames = ['battleship', 'destroyer', 'destroyerTwo'];
@@ -44,17 +47,12 @@
         return !battleshipStore.isHorizontal ? 'flipped' : '';
     });
 
-    const props = defineProps({
-        removeShip: String,
-        restoreShips: Boolean,
-    });
-
     const dragStart = (e: any) => {
         draggedShip = e.target;
-        emit('dragged', draggedShip);
+        battleshipStore.setDraggedShip(draggedShip.id);
     }
 
-    watch(() => props.removeShip, (newValue) => {
+    watch(removeShip, (newValue) => {
         if(newValue) {
             shipToRemove.value.push(newValue);
             if(shipToRemove.value.length === 3) {
@@ -63,7 +61,7 @@
         }
     });
 
-    watch(() => props.restoreShips, (newValue) => {
+    watch(shouldResetGame, (newValue) => {
         if(newValue) {
             shipToRemove.value = [];
         }

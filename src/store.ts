@@ -7,8 +7,8 @@ interface IState {
     isPlayerTurn: Boolean,
     shouldResetGame: Boolean,
     isHorizontal: Boolean,
-    draggedShip: String,
-    removeShip: String,
+    draggedShip: string,
+    removeShip: string,
 } 
 
 const initialState: IState = {
@@ -45,6 +45,19 @@ export const useBattleshipsStore = defineStore('battleships', {
         },
         setIsPlayerTurn(status: Boolean) {
             this.isPlayerTurn = status;
+        },
+        setIsGameOver(status: Boolean) {
+            this.isGameOver = status;
+        },
+        setResetGame(status: Boolean) {
+            this.shouldResetGame = status;
+            this.canStart = false;
+        },
+        setRemoveShip(ship: string) {
+            this.removeShip = ship;
+        },
+        setDraggedShip(ship: string) {
+            this.draggedShip = ship;
         }
     }
 });
