@@ -32,24 +32,20 @@
 
     const battleshipStore = useBattleshipsStore();
 
-    const { removeShip, shouldResetGame } = storeToRefs(battleshipStore);
+    const { removeShip, shouldResetGame, ships } = storeToRefs(battleshipStore);
     
-    // we could make this data array centralised and create the above ships from it
-    const shipNames = ['battleship', 'destroyer', 'destroyerTwo'];
     const isShipsEmpty = computed(() => {
-        return shipNames.every(name => shipToRemove.value.includes(name));
+        return ships.value.every(ship => shipToRemove.value.includes(ship.name));
     });
-    const emit = defineEmits(['dragged', 'canStart']);
-    const shipToRemove: Ref<Array<String>> = ref([]);
-    let draggedShip;
 
     const shipAxis = computed(() => {
         return !battleshipStore.isHorizontal ? 'flipped' : '';
     });
 
+    const shipToRemove: Ref<Array<String>> = ref([]);
+
     const dragStart = (e: any) => {
-        draggedShip = e.target;
-        battleshipStore.setDraggedShip(draggedShip.id);
+        battleshipStore.setDraggedShip(e.target.id);
     }
 
     watch(removeShip, (newValue) => {
@@ -65,7 +61,7 @@
         if(newValue) {
             shipToRemove.value = [];
         }
-    })
+    });
 </script>
 
 <style scoped>
@@ -87,7 +83,7 @@
     }
 
     .battleship {
-        background-color: #666;
+        background-color: #999;
     }
 
     .battleship__preview {

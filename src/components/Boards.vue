@@ -31,13 +31,12 @@
 </template>
 <script setup lang="ts">
 import { watch, ref, type Ref } from 'vue';
-import Ship, { type IShip } from '../static/ship';
-import { useBattleshipsStore } from '../store';
+import { useBattleshipsStore, type IShip } from '../store';
 import { storeToRefs } from 'pinia';
 
 const battleshipStore = useBattleshipsStore();
 
-const { isPlayerTurn, shouldResetGame, draggedShip } = storeToRefs(battleshipStore);
+const { isPlayerTurn, shouldResetGame, draggedShip, ships } = storeToRefs(battleshipStore);
 
  watch(shouldResetGame, (newValue) => {
     if(newValue) {
@@ -47,17 +46,13 @@ const { isPlayerTurn, shouldResetGame, draggedShip } = storeToRefs(battleshipSto
         validBlocks.value = [];
         playerHitCount.value = 0;
         computerHitCount.value = 0;
-        ships.forEach(ship => addShip(ship, null, 'computer'));
+        ships.value.forEach(ship => addShip(ship, null, 'computer'));
     }
  });
 
  const totalBlocks: number = 100;
  const blockWidth: number = 10;
  const blocks: Array<number> = Array.from(Array(totalBlocks).keys());
- const battleship = new Ship('battleship', 5);
- const destroyerOne = new Ship('destroyer', 4);
- const destoryerTwo = new Ship('destroyerTwo', 4);
- const ships = [battleship, destroyerOne, destoryerTwo];
  const validBlocks: Ref<Array<number>> = ref([]);
  const validUserBlocks: Ref<Array<Number>> = ref([]);
  const playerSelection: Ref<Array<number>> = ref([]);
@@ -119,7 +114,7 @@ const { isPlayerTurn, shouldResetGame, draggedShip } = storeToRefs(battleshipSto
     }
  };
 
-ships.forEach(ship => addShip(ship, null, 'computer'));
+ships.value.forEach(ship => addShip(ship, null, 'computer'));
 
 const dragOver = (e: any) => {
     e.preventDefault();
@@ -127,7 +122,7 @@ const dragOver = (e: any) => {
 
 const dropShip = (e: any) => {
     const startId = e.target.id;
-    const ship = ships.filter((ship) => ship.name === draggedShip.value)[0];
+    const ship = ships.value.filter((ship) => ship.name === draggedShip.value)[0];
     if(ship) addShip(ship, startId, 'player');
     if(!notDropped) {
         battleshipStore.setRemoveShip(draggedShip.value);

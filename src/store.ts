@@ -1,5 +1,16 @@
 import { defineStore } from "pinia";
 
+export interface IShip {
+    name: string;
+    length: number;
+    type: string;
+    blocks: Array<number>;
+}
+
+export interface IShips {
+    ships: Array<IShip>;
+}
+
 interface IState {
     startGame: Boolean,
     canStart: Boolean,
@@ -9,6 +20,7 @@ interface IState {
     isHorizontal: Boolean,
     draggedShip: string,
     removeShip: string,
+    ships: Array<IShip>,
 } 
 
 const initialState: IState = {
@@ -19,7 +31,27 @@ const initialState: IState = {
     shouldResetGame: false,
     isHorizontal: true,
     draggedShip: '',
-    removeShip: ''
+    removeShip: '',
+    ships: [
+        {
+            name: 'battleship',
+            length: 5,
+            type: 'battleship',
+            blocks: []
+        },
+        {
+            name: 'destroyer',
+            length: 4,
+            type: 'destroyer',
+            blocks: [],
+        },
+        {
+            name: 'destroyerTwo',
+            length: 4,
+            type: 'destroyer',
+            blocks: []
+        },
+    ]
 }
 
 export const useBattleshipsStore = defineStore('battleships', {
