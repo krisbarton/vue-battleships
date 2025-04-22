@@ -50,6 +50,11 @@ const { isPlayerTurn, shouldResetGame, draggedShip, ships } = storeToRefs(battle
     }
  });
 
+interface IShipBlock {
+    blocks: Array<number>;
+    shipName: string;
+}
+
  const totalBlocks: number = 100;
  const blockWidth: number = 10;
  const blocks: Array<number> = Array.from(Array(totalBlocks).keys());
@@ -61,6 +66,7 @@ const { isPlayerTurn, shouldResetGame, draggedShip, ships } = storeToRefs(battle
  const totalHits: number = 13;
  const playerHitCount: Ref<number> = ref(0);
  const computerHitCount: Ref<number> = ref(0);
+ const selectedComputerShipBlocks: Ref<Array<IShipBlock>> = ref([]);
  
  const addShip = (ship: IShip, startId: string | null, user: string) => {
     const selectedBlocks: Array<number> = [];
@@ -103,7 +109,14 @@ const { isPlayerTurn, shouldResetGame, draggedShip, ships } = storeToRefs(battle
         : selectedBlocks.every(selectedBlock => !validUserBlocks.value.includes(selectedBlock))
 
     if(valid && notTaken) {
-       if(user ==='computer') validBlocks.value.push(...selectedBlocks);
+       if(user ==='computer') {
+            validBlocks.value.push(...selectedBlocks);
+            selectedComputerShipBlocks.value.push({
+                shipName: ship.name,
+                blocks: [...selectedBlocks]
+            });
+       }
+
        if(user === 'player') {
          validUserBlocks.value.push(...selectedBlocks);
          notDropped = false;
@@ -140,6 +153,10 @@ const playerBoardClick = (block: number) => {
 
    const isHit: boolean = playerSelection.value.includes(block) && validBlocks.value.includes(block);
    if(isHit && playerHitCount.value < totalHits) {
+    console.log('is hit. player selection: ', playerSelection.value);
+    selectedComputerShipBlocks.value.forEach((shipBlocks) => {
+        console.log(hitChecker(playerSelection.value, shipBlocks.blocks));
+    })
     playerHitCount.value++;
    }
 
@@ -149,6 +166,9 @@ const playerBoardClick = (block: number) => {
     battleshipStore.setIsPlayerTurn(false);
    }
 };
+
+const hitChecker = (hitBlock: Array<number>, blockSelection: Array<number>) => 
+    blockSelection.every(block => hitBlock.includes(block)) 
 
 const computerTurn = () => {
     const randomSelection: number = Math.floor(Math.random() * totalBlocks);

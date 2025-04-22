@@ -4,11 +4,6 @@ export interface IShip {
     name: string;
     length: number;
     type: string;
-    blocks: Array<number>;
-}
-
-export interface IShips {
-    ships: Array<IShip>;
 }
 
 interface IState {
@@ -37,19 +32,16 @@ const initialState: IState = {
             name: 'battleship',
             length: 5,
             type: 'battleship',
-            blocks: []
         },
         {
             name: 'destroyer',
             length: 4,
             type: 'destroyer',
-            blocks: [],
         },
         {
             name: 'destroyerTwo',
             length: 4,
             type: 'destroyer',
-            blocks: []
         },
     ]
 }
@@ -90,6 +82,6 @@ export const useBattleshipsStore = defineStore('battleships', {
         },
         setDraggedShip(ship: string) {
             this.draggedShip = ship;
-        }
+        },
     }
 });
