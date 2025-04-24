@@ -12,7 +12,7 @@
         </div>
         <div>
             <div v-if="!startGame">Place all of your ships on the board and click Start the game to begin</div>
-            <div class="turn" v-else>
+            <div class="turn" v-if="startGame && !isGameOver">
                 <span v-if="isPlayerTurn">Player's turn</span>
                 <span v-else>Computer's turn</span>
             </div>
@@ -25,7 +25,7 @@
     import { useBattleshipsStore } from '../store';
 
     const battleshipStore = useBattleshipsStore();
-    const { startGame, isPlayerTurn, sunkenShipMessages } = storeToRefs(battleshipStore);
+    const { startGame, isPlayerTurn, sunkenShipMessages,isGameOver } = storeToRefs(battleshipStore);
 
     const isSunkenShipMessages = computed(() => {
         return sunkenShipMessages.value.length > 0;
