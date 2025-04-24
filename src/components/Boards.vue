@@ -6,9 +6,9 @@
                 :key="`user-${block}`"
                 :id="`player-${block}`"
                 :class="['block', 
-                    { 'block--populated taken': validUserBlocks.includes(block) },
+                    { 'block--populated taken': validPlayerBlocks.includes(block) },
                     {'block--selected': computerSelection.includes(block)},
-                    {'block--selected--hit': computerSelection.includes(block) && validUserBlocks.includes(block)}
+                    {'block--selected--hit': computerSelection.includes(block) && validPlayerBlocks.includes(block)}
                 ]"
                 @drop="dropShip"
                 @dragover="dragOver"
@@ -51,11 +51,10 @@ const totalShips = computed(() =>{
  const blockWidth: number = 10;
  const blocks: Array<number> = Array.from(Array(totalBlocks).keys());
  const validBlocks: Ref<Array<number>> = ref([]);
- const validUserBlocks: Ref<Array<Number>> = ref([]);
+ const validPlayerBlocks: Ref<Array<Number>> = ref([]);
  const playerSelection: Ref<Array<number>> = ref([]);
  const computerSelection: Ref<Array<number>> = ref([]);
  const notDropped: Ref<boolean> = ref(true);
- const computerHitCount: Ref<number> = ref(0);
  const selectedComputerShipBlocks: Ref<Array<IShipBlock>> = ref([]);
  const sunkenComputerShips: Ref<Array<string>> = ref([]);
  const selectedPlayerShipBlocks: Ref<Array<IShipBlock>> = ref([]);
@@ -102,7 +101,7 @@ const totalShips = computed(() =>{
     // determine whether block we're place is not already in use
     const notTaken = user === 'computer' 
         ? selectedBlocks.every(selectedBlock => !validBlocks.value.includes(selectedBlock))
-        : selectedBlocks.every(selectedBlock => !validUserBlocks.value.includes(selectedBlock))
+        : selectedBlocks.every(selectedBlock => !validPlayerBlocks.value.includes(selectedBlock))
 
     if(valid && notTaken) {
         if(user ==='computer') {
@@ -114,7 +113,7 @@ const totalShips = computed(() =>{
     }
 
     if(user === 'player') {
-        validUserBlocks.value.push(...selectedBlocks);
+        validPlayerBlocks.value.push(...selectedBlocks);
         selectedPlayerShipBlocks.value.push({
             shipName: ship.name,
             blocks: [...selectedBlocks]
@@ -181,7 +180,7 @@ const computerTurn = () => {
 
     computerSelection.value.push(randomSelection);
 
-    const isHit: boolean = computerSelection.value.includes(randomSelection) && validUserBlocks.value.includes(randomSelection);
+    const isHit: boolean = computerSelection.value.includes(randomSelection) && validPlayerBlocks.value.includes(randomSelection);
 
     if(isHit && sunkenPlayerShips.value.length < totalShips.value) { 
     selectedPlayerShipBlocks.value.forEach((shipBlocks) => {
@@ -211,11 +210,13 @@ watch(shouldResetGame, (newValue) => {
     if(newValue) {
         playerSelection.value = [];
         computerSelection.value = [];
-        validUserBlocks.value = [];
+        validPlayerBlocks.value = [];
         validBlocks.value = [];
-        computerHitCount.value = 0;
         ships.value.forEach(ship => addShip(ship, null, 'computer'));
         battleshipStore.clearSunkenShipMessages();
+        selectedPlayerShipBlocks.value = [];
+        selectedComputerShipBlocks.value = [];
+        
     }
  });
 
