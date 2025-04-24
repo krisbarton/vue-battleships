@@ -1,8 +1,8 @@
 <template>
-    <div class="options">
+    <div class="options" v-if="!isShipsEmpty">
         <div 
             id="destroyer"
-            :class="[`destroyer destroyer__preview ${shipAxis}`, { 'hidden' : shipToRemove.includes('destroyer') }]" 
+            :class="[`ship destroyer destroyer--${shipAxis}`, { 'hidden' : shipToRemove.includes('destroyer') }]" 
             draggable="true"
             @dragstart="dragStart"
         >
@@ -10,19 +10,18 @@
         
         <div 
             id="destroyerTwo"
-            :class="[`destroyer destroyer__preview ${shipAxis}`, { 'hidden' : shipToRemove.includes('destroyerTwo') }]" 
+            :class="[`ship destroyer destroyer--${shipAxis}`, { 'hidden' : shipToRemove.includes('destroyerTwo') }]" 
             draggable="true"
             @dragstart="dragStart"
         >
         </div>
         <div 
             id="battleship"
-            :class="[`battleship battleship__preview ${shipAxis}`, { 'hidden' : shipToRemove.includes('battleship') }]" 
+            :class="[`ship battleship battleship--${shipAxis}`, { 'hidden' : shipToRemove.includes('battleship') }]" 
             draggable="true"
             @dragstart="dragStart"
         >
         </div>
-        <div v-if="isShipsEmpty">All ships used</div>
     </div>
 </template>
 <script setup lang="ts">
@@ -39,7 +38,7 @@
     });
 
     const shipAxis = computed(() => {
-        return !battleshipStore.isHorizontal ? 'flipped' : '';
+        return !battleshipStore.isHorizontal ? 'vertical' : 'horizontal';
     });
 
     const shipToRemove: Ref<Array<String>> = ref([]);
@@ -66,34 +65,35 @@
 
 <style scoped>
     .options {
-        border:1px solid #CCC;
         display: flex;
-        padding: 2rem;
+        justify-content: center;
+        padding: 6rem 2rem;
+        width: 100%;
+    }
+
+    .ship {
+        background-color: #999;
+        cursor: grab;
+        margin: 1vmin;
+        width: calc(4.6vmin * var(--width, 1));
+        height: calc(4.6vmin * var(--height, 1));
     }
 
     .destroyer {
-        background-color: #999;
+       --width: 4;
+       --height: 1;
     }
 
-    .destroyer__preview {
-        cursor: grab;
-        height: 10px;        
-        margin: 5px;
-        width: 40px;
+    .destroyer--vertical {
+        transform: rotate(90deg);
     }
 
     .battleship {
-        background-color: #999;
+        --height: 1;
+        --width: 5;
     }
 
-    .battleship__preview {
-        cursor: grab;
-        height: 10px;
-        margin: 5px;
-        width: 50px;
-    }
-
-    .flipped {
+    .battleship--vertical {
         transform: rotate(90deg);
     }
 

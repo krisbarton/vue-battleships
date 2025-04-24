@@ -16,6 +16,7 @@ interface IState {
     draggedShip: string,
     removeShip: string,
     ships: Array<IShip>,
+    sunkenShipMessages: Array<string>,
 } 
 
 const initialState: IState = {
@@ -43,14 +44,12 @@ const initialState: IState = {
             length: 4,
             type: 'destroyer',
         },
-    ]
+    ],
+    sunkenShipMessages: [],
 }
 
 export const useBattleshipsStore = defineStore('battleships', {
     state: () => (initialState),
-    getters: {
-
-    },
     actions: {
         flip() {
             this.isHorizontal = !this.isHorizontal;
@@ -76,6 +75,8 @@ export const useBattleshipsStore = defineStore('battleships', {
         setResetGame(status: Boolean) {
             this.shouldResetGame = status;
             this.canStart = false;
+            this.isGameOver = false;
+            this.startGame = false;
         },
         setRemoveShip(ship: string) {
             this.removeShip = ship;
@@ -83,5 +84,11 @@ export const useBattleshipsStore = defineStore('battleships', {
         setDraggedShip(ship: string) {
             this.draggedShip = ship;
         },
+        setSunkenShipMessages(ship: string, user: string) {
+            this.sunkenShipMessages.push(`${user} ${ship} has been sunk!`);
+        },
+        clearSunkenShipMessages() {
+            this.sunkenShipMessages = [];
+        }
     }
 });

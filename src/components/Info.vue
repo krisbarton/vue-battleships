@@ -1,26 +1,64 @@
 <template>
-    <div>
-        <div v-if="isGameOver">Game over. <button @click="doReset">Play again?</button></div>
-        <div v-else>
+    <div class="info">
+        <div class="sunken__messages" v-if="isSunkenShipMessages">
+            <ul>
+                <li 
+                    v-for="message in sunkenShipMessages"
+                    :key="generateUUID"
+                >
+                    {{ message }}
+                </li>
+            </ul>
+        </div>
+        <div>
             <div v-if="!startGame">Place all of your ships on the board and click Start the game to begin</div>
-            <div v-else>
-                Who's turn is it? 
-                <span v-if="isPlayerTurn">Players turn</span>
-                <span v-else>Computers turn</span>
+            <div class="turn" v-else>
+                <span v-if="isPlayerTurn">Player's turn</span>
+                <span v-else>Computer's turn</span>
             </div>
         </div>
     </div>
 </template>
 <script setup lang="ts">
+    import { computed } from 'vue';
     import { storeToRefs } from 'pinia';
     import { useBattleshipsStore } from '../store';
 
     const battleshipStore = useBattleshipsStore();
-    const { startGame, isPlayerTurn, isGameOver } = storeToRefs(battleshipStore);
+    const { startGame, isPlayerTurn, sunkenShipMessages } = storeToRefs(battleshipStore);
 
-    const emit = defineEmits(['resetGame']);
+    const isSunkenShipMessages = computed(() => {
+        return sunkenShipMessages.value.length > 0;
+    });
     
-    const doReset = () => {
-        battleshipStore.setResetGame(true);
+
+
+    const generateUUID = () => {
+        return crypto.randomUUID();
     }
 </script>
+
+<style scoped>
+    .info {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .sunken__messages {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .sunken__messages ul {
+        list-style-type: "\1F525";
+        line-height: 1.8;
+    }
+
+    .turn {
+        font-size: 1.8rem;
+    }
+</style>
