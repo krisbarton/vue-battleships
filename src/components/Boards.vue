@@ -36,7 +36,7 @@ import { storeToRefs } from 'pinia';
 
 const battleshipStore = useBattleshipsStore();
 
-const { isPlayerTurn, shouldResetGame, draggedShip, ships } = storeToRefs(battleshipStore);
+const { isPlayerTurn, shouldResetGame, draggedShip, ships, startGame } = storeToRefs(battleshipStore);
 
 interface IShipBlock {
     blocks: Array<number>;
@@ -143,7 +143,7 @@ const dropShip = (e: any) => {
 
 const playerBoardClick = (block: number) => {
    
-   if(playerSelection.value.includes(block) || !isPlayerTurn.value) {
+   if(playerSelection.value.includes(block) || !isPlayerTurn.value || !startGame.value) {
      return;
    }
 

@@ -47,6 +47,7 @@ describe('Battleships Boards Component', () => {
 
     it('should register a selection and a miss on player click', async () => {
         wrapper.vm.validBlocks = [1, 2, 3, 4];
+        await store.doStartGame(true);
         await store.setIsPlayerTurn(true);
         const playerClick = wrapper.find('#computer-5');
         await playerClick.trigger('click', 5);
@@ -57,6 +58,7 @@ describe('Battleships Boards Component', () => {
 
     it('should register a selection and a hit on player click', async () => {
         wrapper.vm.validBlocks = [1, 2, 3, 4];
+        await store.doStartGame(true);
         await store.setIsPlayerTurn(true);
         const playerClick = wrapper.find('#computer-3');
         await playerClick.trigger('click', 3);
@@ -72,6 +74,7 @@ describe('Battleships Boards Component', () => {
             shipName: 'destroyer',
             blocks: [1, 2, 3, 4]
         });
+        await store.doStartGame(true);
         await store.setIsPlayerTurn(true);
         const playerClick1 = wrapper.find('#computer-1');
         await playerClick1.trigger('click', 1);
